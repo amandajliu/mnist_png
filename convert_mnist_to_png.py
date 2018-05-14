@@ -32,7 +32,7 @@ def read(dataset = "training", path = "."):
 
     return lbl, img, size, rows, cols
 
-def write_dataset(labels, data, size, rows, cols, output_dir):
+def write_dataset(labels, data, size, rows, cols, output_dir, dataset):
     # create output directories
     output_dirs = [
         path.join(output_dir, str(i))
@@ -44,7 +44,9 @@ def write_dataset(labels, data, size, rows, cols, output_dir):
 
     # write data
     for (i, label) in enumerate(labels):
-        output_filename = path.join(output_dirs[label], str(i) + ".png")
+        output_filename = path.join(output_dir, str(i) + ".png")
+        with open(dataset+"_img_labels.txt", "a") as f:
+            f.write("{}.png {}\n".format(i, label))
         print("writing " + output_filename)
         with open(output_filename, "wb") as h:
             w = png.Writer(cols, rows, greyscale=True)
@@ -65,4 +67,4 @@ if __name__ == "__main__":
     for dataset in ["training", "testing"]:
         labels, data, size, rows, cols = read(dataset, input_path)
         write_dataset(labels, data, size, rows, cols,
-                      path.join(output_path, dataset))
+                      path.join(output_path, dataset), dataset)
